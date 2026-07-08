@@ -1,6 +1,5 @@
 package com.quest.app.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -17,9 +16,9 @@ import androidx.compose.ui.unit.sp
 // Blanc chaud, verts organiques, jaune soleil. Flat, arrondi, aéré.
 
 // Base claire
-val Cloud = Color(0xFFFBFCF7)        // fond — blanc cassé chaud
-val Mist = Color(0xFFF0F5E9)         // surface vert brume
-val Mint = Color(0xFFE2F6D5)         // surface accent menthe
+val Cloud = Color(0xFFFDFDFB)        // fond — quasi blanc
+val Mist = Color(0xFFF4F8EF)         // surface vert brume très léger
+val Mint = Color(0xFFEAF7DF)         // surface accent menthe douce
 
 // Verts
 val Lime = Color(0xFF9FE870)         // action principale — lime vivant
@@ -112,7 +111,8 @@ private val QuestTypography = Typography().let { base ->
 
 @Composable
 fun QuestTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Thème clair imposé : l'app reste blanche et lumineuse partout
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(

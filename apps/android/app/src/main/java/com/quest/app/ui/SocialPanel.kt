@@ -35,11 +35,14 @@ fun SocialPanel(state: QuestUiState) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
-            Text(
-                "Leaderboard",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text("Classement", style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    "Les membres de ta ville, classés par jours d'affilée avec un quest réussi.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         items(state.leaderboard, key = { it.user.id }) { entry ->
             Surface(

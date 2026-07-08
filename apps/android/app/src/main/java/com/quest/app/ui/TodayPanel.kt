@@ -72,22 +72,27 @@ fun TodayPanel(
             .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // En-tête : date + rareté
+        // En-tête : titre clair + rareté
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column {
+                Text("Le lieu du jour", style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    "Quest du jour",
-                    style = MaterialTheme.typography.labelLarge,
+                    quest.date,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Text(quest.date, style = MaterialTheme.typography.titleLarge)
             }
             RarityBadge(quest.poi.rarity)
         }
+        Text(
+            "Toute la ville a reçu la même destination. Vas-y avant la fin de la journée !",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
 
         // Carte héro : le lieu, posé sur un dégradé végétal
         Surface(
@@ -146,38 +151,80 @@ fun TodayPanel(
 
         // Action / statut du check-in
         when (state.myCheckIn?.status) {
-            null -> Button(
-                onClick = onCheckInClick,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Lime,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            ) {
-                Text("J'y suis — check-in photo", style = MaterialTheme.typography.titleMedium)
+            null -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Les 3 étapes, pour que tout soit limpide
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Text("Comment ça marche", style = MaterialTheme.typography.titleMedium)
+                        StepRow("1", "Rends-toi sur place")
+                        StepRow("2", "Prends une photo une fois arrivé")
+                        StepRow("3", "Un autre membre valide ta photo")
+                    }
+                }
+                Button(
+                    onClick = onCheckInClick,
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Lime,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Text("Je suis sur place — prendre la photo", style = MaterialTheme.typography.titleMedium)
+                }
             }
 
             CheckInStatus.PENDING -> StatusCard(
                 emoji = "⏳",
-                text = "Check-in soumis. En attente de validation par un pair…",
+                text = "Photo envoyée ! Un autre membre doit la valider. " +
+                    "Tu recevras une notification dès que c'est fait.",
                 tint = Sun.copy(alpha = 0.25f),
             )
 
             CheckInStatus.VALIDATED -> StatusCard(
                 emoji = "🌿",
-                text = "Check-in validé. Le mur est déverrouillé !",
+                text = "Bravo, ta photo est validée ! Le mur du jour est maintenant ouvert " +
+                    "— va voir les photos des autres.",
                 tint = Lime.copy(alpha = 0.3f),
             )
 
             CheckInStatus.REJECTED -> StatusCard(
                 emoji = "🍂",
-                text = "Pas de validation à temps. Retente demain.",
+                text = "Personne n'a validé ta photo à temps. Pas grave — un nouveau lieu arrive demain.",
                 tint = Honey.copy(alpha = 0.2f),
             )
         }
 
         Spacer(Modifier.height(72.dp))
+    }
+}
+
+@Composable
+private fun StepRow(number: String, text: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .background(Lime, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                number,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+        Text(text, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

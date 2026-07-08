@@ -47,10 +47,11 @@ fun WallPanel(state: QuestUiState) {
                 Text("🔒", style = MaterialTheme.typography.headlineLarge)
             }
             Spacer(Modifier.height(20.dp))
-            Text("Mur verrouillé", style = MaterialTheme.typography.headlineSmall)
+            Text("Le mur est encore verrouillé", style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Checke d'abord le lieu du jour pour voir les photos des autres.",
+                "Ici s'affichent les photos de tous ceux qui sont allés au lieu du jour. " +
+                    "Pour les voir, va d'abord sur place et fais ton check-in photo.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -65,6 +66,16 @@ fun WallPanel(state: QuestUiState) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(2) }) {
+            Column(modifier = Modifier.padding(bottom = 4.dp)) {
+                Text("Le mur du jour", style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    "Les photos de tous ceux qui ont fait le quest aujourd'hui.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         items(state.wallPhotos, key = { it.checkInId }) { photo ->
             Surface(
                 shape = MaterialTheme.shapes.large,

@@ -32,11 +32,14 @@ fun HistoryPanel(state: QuestUiState) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         item {
-            Text(
-                "Journal",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text("Ton journal", style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    "Tous les lieux que tu as visités, jour après jour.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         items(state.history, key = { it.quest.id }) { entry ->
             Surface(

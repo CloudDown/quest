@@ -48,10 +48,11 @@ fun CheckInScreen(
             Text("📸", style = MaterialTheme.typography.displaySmall)
         }
         Spacer(Modifier.height(24.dp))
-        Text("Check-in photo", style = MaterialTheme.typography.headlineMedium)
+        Text("Prends ta photo sur place", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(10.dp))
         Text(
-            "La caméra s'ouvrira ici.\nPas de validation depuis son canapé.",
+            "La caméra s'ouvrira ici pour prouver que tu y es vraiment.\n" +
+                "Ta photo sera ensuite validée par un autre membre.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -65,7 +66,7 @@ fun CheckInScreen(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
         ) {
-            Text("Soumettre (démo)", style = MaterialTheme.typography.titleMedium)
+            Text("Envoyer ma photo (démo)", style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(8.dp))
         TextButton(onClick = onClose) {
