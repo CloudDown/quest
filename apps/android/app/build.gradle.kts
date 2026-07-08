@@ -49,4 +49,15 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     debugImplementation(libs.compose.ui.tooling)
+
+    // Carte OpenStreetMap (lieu du jour)
+    implementation(libs.osmdroid.android)
+
+    // Photos Wikipedia
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    // Position pour trouver la ville et calculer la distance
+    implementation(libs.play.services.location)
+    implementation(libs.kotlinx.coroutines.play.services)
 }

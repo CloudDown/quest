@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -24,7 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.quest.app.core.QuestUiState
 import com.quest.app.ui.theme.Leaf
 import com.quest.app.ui.theme.Lime
@@ -62,11 +65,11 @@ fun WallPanel(state: QuestUiState) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 88.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(2) }) {
+        item(span = { GridItemSpan(2) }) {
             Column(modifier = Modifier.padding(bottom = 4.dp)) {
                 Text("Le mur du jour", style = MaterialTheme.typography.headlineMedium)
                 Text(
@@ -82,15 +85,27 @@ fun WallPanel(state: QuestUiState) {
                 color = MaterialTheme.colorScheme.surface,
             ) {
                 Column {
-                    // Placeholder photo — dégradé végétal en attendant Coil
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(3f / 4f)
-                            .background(Brush.linearGradient(listOf(Mint, Lime.copy(alpha = 0.5f)))),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text("🌄", style = MaterialTheme.typography.displaySmall)
+                    if (photo.photoUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = photo.photoUrl,
+                            contentDescription = "Photo de ${photo.username}",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(3f / 4f),
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(3f / 4f)
+                                .background(
+                                    Brush.linearGradient(listOf(Mint, Lime.copy(alpha = 0.5f))),
+                                ),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text("🌄", style = MaterialTheme.typography.displaySmall)
+                        }
                     }
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
