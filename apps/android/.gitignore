@@ -1,0 +1,21 @@
+# Gradle
+.gradle/
+build/
+
+# Config locale (chemin SDK, secrets)
+local.properties
+
+# IDE
+.idea/
+*.iml
+.kotlin/
+
+# Signing
+*.jks
+*.keystore
+!debug.keystore
+
+# Divers
+captures/
+.externalNativeBuild/
+.cxx/

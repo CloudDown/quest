@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+**/build/
+**/.gradle/
+dist/
+web-build/
+
+# Expo / React Native
+.expo/
+.kotlin/
+*.jks
+*.keystore
+!**/debug.keystore
+
+# Android local config
+local.properties
+
+# IDE / OS
+.idea/
+*.iml
+.DS_Store
+.cursor/
+
+# Env & secrets
+.env
+.env*.local
+*.pem
+*.p8
+*.p12
+*.key
+
+# Debug
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
