@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,15 +19,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import com.quest.app.ui.theme.Lime
-import com.quest.app.ui.theme.Sun
 
-/**
- * Écran check-in photo (overlay plein écran).
- * TODO: CameraX + vérification GPS au POI.
- */
 @Composable
 fun CheckInScreen(
     onSubmit: () -> Unit,
@@ -42,33 +34,31 @@ fun CheckInScreen(
         Box(
             modifier = Modifier
                 .size(96.dp)
-                .background(Brush.linearGradient(listOf(Lime, Sun)), CircleShape),
+                .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Text("📸", style = MaterialTheme.typography.displaySmall)
         }
-        Spacer(Modifier.height(24.dp))
-        Text("Prends ta photo sur place", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
+        Text("Ta photo", style = MaterialTheme.typography.headlineMedium)
+        Spacer(Modifier.height(8.dp))
         Text(
-            "La caméra s'ouvrira ici pour prouver que tu y es vraiment.\n" +
-                "Ta photo sera ensuite validée par un autre membre.",
+            "Sur place. Un autre Quester valide.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(Modifier.height(36.dp))
+        Spacer(Modifier.height(32.dp))
         Button(
             onClick = onSubmit,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth().height(54.dp),
+            shape = MaterialTheme.shapes.medium,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Lime,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
         ) {
-            Text("Envoyer ma photo (démo)", style = MaterialTheme.typography.titleMedium)
+            Text("Envoyer", style = MaterialTheme.typography.titleMedium)
         }
-        Spacer(Modifier.height(8.dp))
         TextButton(onClick = onClose) {
             Text("Annuler", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

@@ -31,6 +31,12 @@ local.properties
 *.p12
 *.key
 
+# Python / server
+**/__pycache__/
+**/.venv/
+server/quest.db
+server/uploads/
+
 # Debug
 *.log
 npm-debug.*

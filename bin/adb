@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Wrapper adb du projet Quest.
+# Pour `adb install app/build/outputs/apk/debug/app-debug.apk` :
+#   1. compile l'APK s'il manque
+#   2. installe (-r)
+#   3. lance l'app
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ANDROID_DIR="$ROOT/mobile_app"
+APK_REL="app/build/outputs/apk/debug/app-debug.apk"
+APK="$ANDROID_DIR/$APK_REL"
+PACKAGE="com.quest.app"
+ACTIVITY="com.quest.app/.MainActivity"
+
+find_real_adb() {
+  if [[ -n "${ANDROID_HOME:-}" && -x "${ANDROID_HOME}/platform-tools/adb" ]]; then
+    echo "${ANDROID_HOME}/platform-tools/adb"
+    return
+  fi
+  if [[ -n "${ANDROID_SDK_ROOT:-}" && -x "${ANDROID_SDK_ROOT}/platform-tools/adb" ]]; then
+    echo "${ANDROID_SDK_ROOT}/platform-tools/adb"
+    return
+  fi
+  local props="$ANDROID_DIR/local.properties"
+  if [[ -f "$props" ]]; then
+    local sdk
+    sdk="$(sed -n 's/^sdk.dir=//p' "$props" | tr -d '\r' | sed 's|\\|/|g; s|file:||')"
+    if [[ -x "$sdk/platform-tools/adb" ]]; then
+      echo "$sdk/platform-tools/adb"
+      return
+    fi
+  fi
+  # Évite de se rappeler soi-même via PATH
+  local candidate
+  while IFS= read -r candidate; do
+    if [[ "$(realpath "$candidate")" != "$(realpath "$0")" ]]; then
+      echo "$candidate"
+      return
+    fi
+  done < <(type -aP adb 2>/dev/null || true)
+  echo "adb introuvable (installe platform-tools ou définis ANDROID_HOME)" >&2
+  exit 127
+}
+
+REAL_ADB="$(find_real_adb)"
+
+is_quest_debug_install() {
+  [[ $# -ge 2 && "$1" == "install" ]] || return 1
+  local arg
+  for arg in "$@"; do
+    if [[ "$arg" == *"app-debug.apk" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+if is_quest_debug_install "$@"; then
+  if [[ ! -f "$APK" ]]; then
+    echo "APK absent — compilation…"
+    (cd "$ANDROID_DIR" && ./gradlew assembleDebug --quiet)
+  fi
+  "$REAL_ADB" install -r "$APK"
+  "$REAL_ADB" shell am start -n "$ACTIVITY" >/dev/null
+  echo "Quest lancé ($PACKAGE)"
+  exit 0
+fi
+
+exec "$REAL_ADB" "$@"

@@ -12,106 +12,125 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ─── Palette Quest : nature moderne ──────────────────────────────
-// Blanc chaud, verts organiques, jaune soleil. Flat, arrondi, aéré.
+// ─── Quest Clear ─────────────────────────────────────────────────
+// Neutres pour la structure, un seul vert pour l’action.
+// Objectif : hiérarchie lisible — on sait où regarder.
 
-// Base claire
-val Cloud = Color(0xFFFDFDFB)        // fond — quasi blanc
-val Mist = Color(0xFFF4F8EF)         // surface vert brume très léger
-val Mint = Color(0xFFEAF7DF)         // surface accent menthe douce
+// Neutres (90 % de l’UI)
+val Ink = Color(0xFF12141A)          // texte principal
+val Slate = Color(0xFF5C6570)        // texte secondaire
+val Paper = Color(0xFFF4F4F2)        // fond
+val Snow = Color(0xFFFFFFFF)         // cartes / surfaces
+val Line = Color(0xFFDDDDD8)         // séparateurs
+val Soft = Color(0xFFECECE8)         // surface variante
 
-// Verts
-val Lime = Color(0xFF9FE870)         // action principale — lime vivant
-val Leaf = Color(0xFF4C8C2B)         // vert feuille
-val Forest = Color(0xFF163300)       // vert forêt — texte, contraste
-val Moss = Color(0xFF5C7052)         // vert mousse — texte secondaire
+// Action (CTA uniquement)
+val Signal = Color(0xFF1B7A4A)       // vert franc, texte blanc
+val SignalSoft = Color(0xFFDFF0E6)   // fond d’état positif
 
-// Jaunes
-val Sun = Color(0xFFFFD75E)          // jaune soleil — accents chauds
-val Honey = Color(0xFFE8A800)        // jaune miel — badges, highlights
+// Accent chaud (légendaire / célébration)
+val Amber = Color(0xFFC47E00)
+val AmberSoft = Color(0xFFFFF1D6)
 
-// Sombre (thème nuit en sous-bois)
-val NightForest = Color(0xFF101B0D)  // fond sombre
-val NightMoss = Color(0xFF1B2A16)    // surface sombre
-val NightMist = Color(0xFF25361E)    // surface sombre élevée
+// Sombre
+val NightInk = Color(0xFFE8EAED)
+val NightSlate = Color(0xFF9AA3AD)
+val NightPaper = Color(0xFF0F1217)
+val NightSnow = Color(0xFF1A1F27)
+val NightSoft = Color(0xFF242B35)
+val NightLine = Color(0xFF323A46)
 
-// Rareté des lieux
-val RarityCommon = Color(0xFF8FA98B)     // sauge discrète
-val RarityRare = Color(0xFF4C8C2B)       // vert feuille vif
-val RarityLegendary = Color(0xFFE8A800)  // or soleil
+// Rareté — langage distinct du brand
+val RarityCommon = Color(0xFF8A9199)
+val RarityRare = Color(0xFF1B7A4A)
+val RarityLegendary = Color(0xFFC47E00)
+
+// Alias (composants existants)
+val Lime = Signal
+val Leaf = Signal
+val Forest = Ink
+val Moss = Slate
+val Cloud = Paper
+val Mist = Soft
+val Mint = SignalSoft
+val Sun = Amber
+val Honey = Amber
+val NightForest = NightPaper
+val NightMoss = NightSnow
+val NightMist = NightSoft
 
 private val LightColors = lightColorScheme(
-    primary = Lime,
-    onPrimary = Forest,
-    primaryContainer = Mint,
-    onPrimaryContainer = Forest,
-    secondary = Sun,
-    onSecondary = Forest,
-    secondaryContainer = Color(0xFFFFF3CC),
-    onSecondaryContainer = Color(0xFF4A3B00),
-    tertiary = Leaf,
+    primary = Signal,
+    onPrimary = Color.White,
+    primaryContainer = SignalSoft,
+    onPrimaryContainer = Color(0xFF0F3D26),
+    secondary = Amber,
+    onSecondary = Color.White,
+    secondaryContainer = AmberSoft,
+    onSecondaryContainer = Color(0xFF5C3A00),
+    tertiary = Signal,
     onTertiary = Color.White,
-    background = Cloud,
-    onBackground = Forest,
-    surface = Color.White,
-    onSurface = Forest,
-    surfaceVariant = Mist,
-    onSurfaceVariant = Moss,
-    outline = Color(0xFFD5DFC9),
-    outlineVariant = Color(0xFFE6EDDC),
+    background = Paper,
+    onBackground = Ink,
+    surface = Snow,
+    onSurface = Ink,
+    surfaceVariant = Soft,
+    onSurfaceVariant = Slate,
+    outline = Line,
+    outlineVariant = Soft,
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Lime,
-    onPrimary = Forest,
-    primaryContainer = NightMist,
-    onPrimaryContainer = Lime,
-    secondary = Sun,
-    onSecondary = Forest,
-    secondaryContainer = Color(0xFF3A3010),
-    onSecondaryContainer = Sun,
-    tertiary = Lime,
-    onTertiary = Forest,
-    background = NightForest,
-    onBackground = Color(0xFFE8F2DE),
-    surface = NightMoss,
-    onSurface = Color(0xFFE8F2DE),
-    surfaceVariant = NightMist,
-    onSurfaceVariant = Color(0xFFA9BC9F),
-    outline = Color(0xFF3A4A32),
-    outlineVariant = Color(0xFF2C3A25),
+    primary = Color(0xFF3DCF7A),
+    onPrimary = Color(0xFF00391F),
+    primaryContainer = Color(0xFF145C38),
+    onPrimaryContainer = Color(0xFFB8F0D0),
+    secondary = Color(0xFFE8B84A),
+    onSecondary = Color(0xFF3D2A00),
+    secondaryContainer = Color(0xFF4A3500),
+    onSecondaryContainer = AmberSoft,
+    tertiary = Color(0xFF3DCF7A),
+    onTertiary = Color(0xFF00391F),
+    background = NightPaper,
+    onBackground = NightInk,
+    surface = NightSnow,
+    onSurface = NightInk,
+    surfaceVariant = NightSoft,
+    onSurfaceVariant = NightSlate,
+    outline = NightLine,
+    outlineVariant = NightSoft,
 )
 
-// Formes organiques : tout est doux, rien d'anguleux
+// Formes nettes : structure lisible, pas de « blob » organique
 private val QuestShapes = Shapes(
-    extraSmall = RoundedCornerShape(10.dp),
-    small = RoundedCornerShape(14.dp),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(28.dp),
-    extraLarge = RoundedCornerShape(36.dp),
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(16.dp),
+    large = RoundedCornerShape(20.dp),
+    extraLarge = RoundedCornerShape(24.dp),
 )
 
-// Typo : titres affirmés, corps calme
 private val QuestTypography = Typography().let { base ->
     base.copy(
         headlineLarge = base.headlineLarge.copy(
-            fontWeight = FontWeight.ExtraBold,
-            letterSpacing = (-0.5).sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = (-0.4).sp,
         ),
         headlineMedium = base.headlineMedium.copy(
-            fontWeight = FontWeight.ExtraBold,
-            letterSpacing = (-0.5).sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = (-0.3).sp,
         ),
         headlineSmall = base.headlineSmall.copy(fontWeight = FontWeight.Bold),
         titleLarge = base.titleLarge.copy(fontWeight = FontWeight.Bold),
         titleMedium = base.titleMedium.copy(fontWeight = FontWeight.SemiBold),
         labelLarge = base.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+        bodyLarge = base.bodyLarge.copy(lineHeight = 24.sp),
+        bodyMedium = base.bodyMedium.copy(lineHeight = 22.sp),
     )
 }
 
 @Composable
 fun QuestTheme(
-    // Thème clair imposé : l'app reste blanche et lumineuse partout
     darkTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {

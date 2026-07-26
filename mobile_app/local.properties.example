@@ -1,0 +1,8 @@
+## sdk.dir — chemin Android SDK
+sdk.dir=/home/rain/Documents/program/Sdk
+
+## URL du backend Quest (server/)
+## usb  → http://127.0.0.1:8000  (+ adb reverse)
+## lan  → http://<IP-PC>:8000
+## émulateur → http://10.0.2.2:8000
+quest.api.base.url=http://127.0.0.1:8000

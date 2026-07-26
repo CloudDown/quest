@@ -81,6 +81,13 @@ enum class LoadState {
     READY,
 }
 
+/** Préférence d'apparence. */
+enum class ThemeMode {
+    SYSTEM,
+    LIGHT,
+    DARK,
+}
+
 /** État agrégé consommé par les panneaux Compose. */
 data class QuestUiState(
     val loadState: LoadState = LoadState.LOADING,
@@ -91,6 +98,8 @@ data class QuestUiState(
     val myLongitude: Double? = null,
     val myCheckIn: CheckIn? = null,
     val streak: Int = 0,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val hasLocationPermission: Boolean = false,
     val wallPhotos: List<WallPhoto> = emptyList(),
     val leaderboard: List<LeaderboardEntry> = emptyList(),
     val history: List<HistoryEntry> = emptyList(),

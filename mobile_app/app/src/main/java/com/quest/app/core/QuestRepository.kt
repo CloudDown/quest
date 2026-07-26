@@ -38,6 +38,7 @@ class QuestRepository private constructor(private val appContext: Context) {
     companion object {
         private val KEY_QUEST = stringPreferencesKey("today_quest_json")
         private val KEY_CHECKIN = stringPreferencesKey("today_checkin_json")
+        private val KEY_THEME = stringPreferencesKey("theme_mode")
 
         @Volatile
         private var instance: QuestRepository? = null
@@ -56,8 +57,9 @@ class QuestRepository private constructor(private val appContext: Context) {
     private val positionFlow = MutableStateFlow<Pair<Double, Double>?>(null)
     private val distanceFlow = MutableStateFlow<Float?>(null)
     private val myCheckInFlow = MutableStateFlow<CheckIn?>(null)
+    private val themeModeFlow = MutableStateFlow(ThemeMode.SYSTEM)
 
-    val uiState = combine(
+    private val coreState = combine(
         loadStateFlow,
         questFlow,
         positionFlow,
@@ -72,14 +74,35 @@ class QuestRepository private constructor(private val appContext: Context) {
             myLongitude = position?.second,
             myCheckIn = checkIn,
             streak = DemoData.streak,
+            hasLocationPermission = locationService.hasPermission(),
             wallPhotos = if (quest != null) DemoData.wallPhotos(quest) else emptyList(),
             leaderboard = DemoData.leaderboard,
             history = if (quest != null) DemoData.history(quest) else emptyList(),
         )
+    }
+
+    val uiState = combine(coreState, themeModeFlow) { state, themeMode ->
+        state.copy(
+            themeMode = themeMode,
+            hasLocationPermission = locationService.hasPermission(),
+        )
     }.stateIn(scope, SharingStarted.Eagerly, QuestUiState())
 
     init {
+        scope.launch {
+            val stored = appContext.dataStore.data.first()[KEY_THEME]
+            themeModeFlow.value = stored?.let {
+                runCatching { ThemeMode.valueOf(it) }.getOrNull()
+            } ?: ThemeMode.SYSTEM
+        }
         refresh()
+    }
+
+    fun setThemeMode(mode: ThemeMode) {
+        themeModeFlow.value = mode
+        scope.launch {
+            appContext.dataStore.edit { it[KEY_THEME] = mode.name }
+        }
     }
 
     /** (Re)charge le quest du jour. Appelé au démarrage, après permission, ou sur « réessayer ». */

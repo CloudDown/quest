@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -28,10 +27,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import androidx.compose.ui.graphics.Color
 import com.quest.app.core.QuestUiState
-import com.quest.app.ui.theme.Leaf
-import com.quest.app.ui.theme.Lime
-import com.quest.app.ui.theme.Mint
 
 @Composable
 fun WallPanel(state: QuestUiState) {
@@ -43,18 +40,17 @@ fun WallPanel(state: QuestUiState) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(88.dp)
-                    .background(Mint, CircleShape),
+                    .size(72.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("🔒", style = MaterialTheme.typography.headlineLarge)
+                Text("🔒", style = MaterialTheme.typography.headlineMedium)
             }
-            Spacer(Modifier.height(20.dp))
-            Text("Le mur est encore verrouillé", style = MaterialTheme.typography.headlineSmall)
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
+            Text("Mur verrouillé", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(6.dp))
             Text(
-                "Ici s'affichent les photos de tous ceux qui sont allés au lieu du jour. " +
-                    "Pour les voir, va d'abord sur place et fais ton check-in photo.",
+                "Checke d’abord le lieu du jour.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -65,34 +61,19 @@ fun WallPanel(state: QuestUiState) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item(span = { GridItemSpan(2) }) {
-            Column(modifier = Modifier.padding(bottom = 4.dp)) {
-                Text("Le mur du jour", style = MaterialTheme.typography.headlineMedium)
-                Text(
-                    "Les photos de tous ceux qui ont fait le quest aujourd'hui.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
         items(state.wallPhotos, key = { it.checkInId }) { photo ->
-            Surface(
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surface,
-            ) {
-                Column {
+            Surface(shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surface) {
+                Box {
                     if (photo.photoUrl.isNotEmpty()) {
                         AsyncImage(
                             model = photo.photoUrl,
-                            contentDescription = "Photo de ${photo.username}",
+                            contentDescription = photo.username,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(3f / 4f),
+                            modifier = Modifier.fillMaxWidth().aspectRatio(3f / 4f),
                         )
                     } else {
                         Box(
@@ -100,29 +81,26 @@ fun WallPanel(state: QuestUiState) {
                                 .fillMaxWidth()
                                 .aspectRatio(3f / 4f)
                                 .background(
-                                    Brush.linearGradient(listOf(Mint, Lime.copy(alpha = 0.5f))),
+                                    Brush.linearGradient(
+                                        listOf(
+                                            MaterialTheme.colorScheme.primaryContainer,
+                                            MaterialTheme.colorScheme.surfaceVariant,
+                                        ),
+                                    ),
                                 ),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Text("🌄", style = MaterialTheme.typography.displaySmall)
+                            Text("🌄", style = MaterialTheme.typography.headlineMedium)
                         }
                     }
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            "@${photo.username}",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = Leaf,
-                            modifier = Modifier.weight(1f),
-                        )
-                        Text(
-                            "☀️ ${photo.reactions}",
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                    }
+                    Text(
+                        "@${photo.username}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(10.dp),
+                    )
                 }
             }
         }

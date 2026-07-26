@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.quest.app.ui.theme.Lime
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -64,7 +63,7 @@ fun ValidatedCelebration() {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
-            color = Lime.copy(alpha = 0.3f),
+            color = MaterialTheme.colorScheme.primaryContainer,
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
