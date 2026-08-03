@@ -121,14 +121,14 @@ fun QuestMapScreen(
     }
 }
 
-/** Point « moi » : disque lime cerclé de vert forêt. */
+/** Point « moi » : disque signal cerclé. */
 private class MyPositionOverlay(private val point: GeoPoint) : Overlay() {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = android.graphics.Color.parseColor("#9FE870")
+        color = android.graphics.Color.parseColor("#3DCF7A")
         style = Paint.Style.FILL
     }
     private val ring = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = android.graphics.Color.parseColor("#163300")
+        color = android.graphics.Color.parseColor("#1F8A52")
         style = Paint.Style.STROKE
         strokeWidth = 6f
     }

@@ -76,5 +76,10 @@ class CheckInPublic(BaseModel):
     submitted_at: datetime
 
 
+class SubmitCheckInRequest(BaseModel):
+    """URL photo optionnelle (ex. Wikipedia du lieu en attendant la caméra)."""
+    photo_url: str | None = None
+
+
 class SubmitCheckInResponse(BaseModel):
     check_in: CheckInPublic

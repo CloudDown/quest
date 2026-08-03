@@ -1,1 +1,0 @@
-export { fetchTodayFeed } from './api';

@@ -32,8 +32,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,7 +48,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Surface
 import com.quest.app.core.QuestRepository
 import com.quest.app.core.Rarity
 import com.quest.app.core.ThemeMode
@@ -58,7 +57,8 @@ import com.quest.app.ui.QuestMapScreen
 import com.quest.app.ui.SocialPanel
 import com.quest.app.ui.TodayPanel
 import com.quest.app.ui.WallPanel
-import com.quest.app.ui.theme.Honey
+import com.quest.app.ui.theme.Amber
+import com.quest.app.ui.theme.AmberSoft
 import com.quest.app.ui.theme.QuestTheme
 import kotlinx.coroutines.launch
 
@@ -115,12 +115,10 @@ fun QuestApp(repository: QuestRepository) {
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
-            // Header : marque + ville + streak (doré les jours légendaires)
-            Column(
-                modifier = Modifier.fillMaxWidth().background(
-                    if (isLegendary) Honey.copy(alpha = 0.18f)
-                    else MaterialTheme.colorScheme.surface,
-                ),
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = if (isLegendary) AmberSoft else MaterialTheme.colorScheme.surface,
+                shadowElevation = 0.dp,
             ) {
                 Row(
                     modifier = Modifier
@@ -133,27 +131,29 @@ fun QuestApp(repository: QuestRepository) {
                         Text(
                             "Quest",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black),
-                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
-                            state.todayQuest?.cityName ?: "",
+                            when {
+                                isLegendary -> "✨ Jour légendaire"
+                                state.todayQuest != null -> state.todayQuest!!.cityName
+                                else -> "Le lieu du jour"
+                            },
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (isLegendary) Amber else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = if (isLegendary) Honey.copy(alpha = 0.35f)
-                        else MaterialTheme.colorScheme.surfaceVariant,
+                        color = if (isLegendary) Amber.copy(alpha = 0.2f)
+                        else MaterialTheme.colorScheme.primaryContainer,
                     ) {
                         Text(
                             "🔥 ${state.streak}",
                             style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                         )
                     }
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             }
 
             HorizontalPager(
@@ -179,25 +179,24 @@ fun QuestApp(repository: QuestRepository) {
                 }
             }
 
-            // Navigation — onglet actif = trait vert sous le label
-            Column(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            Surface(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                        .padding(horizontal = 6.dp, vertical = 6.dp),
                 ) {
                     tabs.forEachIndexed { index, label ->
                         val selected = pagerState.currentPage == index
                         Column(
                             modifier = Modifier
                                 .weight(1f)
+                                .clip(RoundedCornerShape(14.dp))
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                 ) {
                                     scope.launch {
-                                        pagerState.animateScrollToPage(index, animationSpec = tween(300))
+                                        pagerState.animateScrollToPage(index, animationSpec = tween(280))
                                     }
                                 }
                                 .padding(vertical = 10.dp),
@@ -207,16 +206,13 @@ fun QuestApp(repository: QuestRepository) {
                                 label,
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (selected) {
-                                    MaterialTheme.colorScheme.onSurface
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
+                                color = if (selected) MaterialTheme.colorScheme.onSurface
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
                             )
-                            Spacer(Modifier.height(6.dp))
+                            Spacer(Modifier.height(5.dp))
                             Box(
                                 modifier = Modifier
-                                    .width(28.dp)
+                                    .width(22.dp)
                                     .height(3.dp)
                                     .clip(RoundedCornerShape(2.dp))
                                     .background(
@@ -232,8 +228,8 @@ fun QuestApp(repository: QuestRepository) {
 
         AnimatedVisibility(
             visible = mapOpen,
-            enter = fadeIn(tween(250)) + scaleIn(initialScale = 0.96f, animationSpec = tween(250)),
-            exit = fadeOut(tween(200)) + scaleOut(targetScale = 0.96f, animationSpec = tween(200)),
+            enter = fadeIn(tween(250)) + scaleIn(initialScale = 0.97f, animationSpec = tween(250)),
+            exit = fadeOut(tween(200)) + scaleOut(targetScale = 0.97f, animationSpec = tween(200)),
         ) {
             state.todayQuest?.let { quest ->
                 QuestMapScreen(
@@ -247,8 +243,8 @@ fun QuestApp(repository: QuestRepository) {
 
         AnimatedVisibility(
             visible = checkInOpen,
-            enter = fadeIn(tween(250)) + scaleIn(initialScale = 0.94f, animationSpec = tween(250)),
-            exit = fadeOut(tween(200)) + scaleOut(targetScale = 0.94f, animationSpec = tween(200)),
+            enter = fadeIn(tween(250)) + scaleIn(initialScale = 0.96f, animationSpec = tween(250)),
+            exit = fadeOut(tween(200)) + scaleOut(targetScale = 0.96f, animationSpec = tween(200)),
         ) {
             Box(
                 modifier = Modifier

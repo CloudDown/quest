@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +33,7 @@ import com.quest.app.core.CheckInStatus
 import com.quest.app.core.LoadState
 import com.quest.app.core.QuestUiState
 import com.quest.app.core.Rarity
+import com.quest.app.ui.theme.AmberSoft
 import com.quest.app.ui.theme.RarityCommon
 import com.quest.app.ui.theme.RarityLegendary
 import com.quest.app.ui.theme.RarityRare
@@ -49,74 +47,27 @@ fun TodayPanel(
     onRetry: () -> Unit,
 ) {
     when (state.loadState) {
-        LoadState.NEEDS_PERMISSION -> CenterState(
+        LoadState.NEEDS_PERMISSION -> EmptyState(
             emoji = "📍",
-            title = "Active ta position",
-            body = "Pour trouver le lieu du jour dans ta ville.",
-            action = "Continuer" to onGrantPermission,
+            title = "Où es-tu ?",
+            body = "Quest trouve ta ville pour révéler le lieu du jour — le même pour tous.",
+            actionLabel = "Autoriser la localisation",
+            onAction = onGrantPermission,
         )
-        LoadState.LOADING -> CenterState(
+        LoadState.LOADING -> EmptyState(
             emoji = null,
-            title = "Chargement…",
-            body = null,
+            title = "Recherche du lieu…",
+            body = "Un instant.",
             loading = true,
         )
-        LoadState.ERROR -> CenterState(
+        LoadState.ERROR -> EmptyState(
             emoji = "🍂",
-            title = "Pas de lieu",
+            title = "Impossible de charger",
             body = "Vérifie le réseau et la localisation.",
-            action = "Réessayer" to onRetry,
+            actionLabel = "Réessayer",
+            onAction = onRetry,
         )
         LoadState.READY -> QuestContent(state, onCheckInClick, onMapClick)
-    }
-}
-
-@Composable
-private fun CenterState(
-    emoji: String?,
-    title: String,
-    body: String?,
-    action: Pair<String, () -> Unit>? = null,
-    loading: Boolean = false,
-) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        when {
-            loading -> CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-            emoji != null -> Text(emoji, style = MaterialTheme.typography.displaySmall)
-        }
-        Spacer(Modifier.height(16.dp))
-        Text(title, style = MaterialTheme.typography.headlineSmall)
-        if (body != null) {
-            Spacer(Modifier.height(8.dp))
-            Text(
-                body,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        if (action != null) {
-            Spacer(Modifier.height(24.dp))
-            PillButton(action.first, action.second)
-        }
-    }
-}
-
-@Composable
-private fun PillButton(label: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth().height(54.dp),
-        shape = MaterialTheme.shapes.medium,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-    ) {
-        Text(label, style = MaterialTheme.typography.titleMedium)
     }
 }
 
@@ -128,169 +79,169 @@ private fun QuestContent(
 ) {
     val quest = state.todayQuest ?: return
 
-    Column(
+    FadeInColumn(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp)
-            .padding(top = 12.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+            .padding(top = 8.dp, bottom = 16.dp),
     ) {
-        Text(
-            "Lieu du jour",
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(320.dp)
-                .clip(MaterialTheme.shapes.extraLarge),
-        ) {
-            if (quest.poi.photoUrl != null) {
-                AsyncImage(
-                    model = quest.poi.photoUrl,
-                    contentDescription = quest.poi.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            // Héro photo
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(340.dp)
+                    .clip(MaterialTheme.shapes.extraLarge),
+            ) {
+                if (quest.poi.photoUrl != null) {
+                    AsyncImage(
+                        model = quest.poi.photoUrl,
+                        contentDescription = quest.poi.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        MaterialTheme.colorScheme.surfaceVariant,
+                                    ),
+                                ),
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("🌳", style = MaterialTheme.typography.displayLarge)
+                    }
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            Brush.linearGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.surfaceVariant,
-                                ),
+                            Brush.verticalGradient(
+                                0f to Color.Black.copy(alpha = 0.08f),
+                                0.45f to Color.Transparent,
+                                1f to Color.Black.copy(alpha = 0.78f),
                             ),
                         ),
-                    contentAlignment = Alignment.Center,
+                )
+                Box(Modifier.padding(14.dp).align(Alignment.TopStart)) {
+                    RarityBadge(quest.poi.rarity)
+                }
+                Column(
+                    modifier = Modifier.align(Alignment.BottomStart).padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Text("🌳", style = MaterialTheme.typography.displayLarge)
+                    Text(
+                        quest.cityName.uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White.copy(alpha = 0.8f),
+                    )
+                    Text(
+                        quest.poi.name,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White,
+                    )
                 }
             }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                state.distanceMeters?.let { InfoChip("🚶", formatDistance(it)) }
+                if (quest.poi.rarity == Rarity.LEGENDARY) {
+                    InfoChip("✨", "Jour légendaire")
+                } else if (quest.poi.rarity == Rarity.RARE) {
+                    InfoChip("🌿", "Jour rare")
+                }
+            }
+
+            when (state.myCheckIn?.status) {
+                null -> QuestPrimaryButton("Je suis sur place", onCheckInClick)
+                CheckInStatus.PENDING -> StatusBanner(
+                    emoji = "⏳",
+                    title = "Photo envoyée",
+                    body = "Un autre Quester doit la valider.",
+                    tint = AmberSoft,
+                )
+                CheckInStatus.VALIDATED -> ValidatedCelebration()
+                CheckInStatus.REJECTED -> StatusBanner(
+                    emoji = "🍂",
+                    title = "Non validée",
+                    body = "Demain, un nouveau lieu t’attend.",
+                )
+            }
+
+            val blurb = quest.poi.description.trim()
+            if (blurb.isNotEmpty()) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    Column(modifier = Modifier.padding(18.dp)) {
+                        Text(
+                            "Le lieu",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            if (blurb.length > 260) blurb.take(257) + "…" else blurb,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+            }
+
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0f to Color.Transparent,
-                            0.55f to Color.Transparent,
-                            1f to Color.Black.copy(alpha = 0.72f),
-                        ),
+                    .fillMaxWidth()
+                    .height(190.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onMapClick,
                     ),
-            )
-            Box(Modifier.padding(14.dp).align(Alignment.TopStart)) {
-                RarityBadge(quest.poi.rarity)
-            }
-            Column(
-                modifier = Modifier.align(Alignment.BottomStart).padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Text(
-                    "Aujourd’hui à ${quest.cityName}",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.White.copy(alpha = 0.85f),
+                QuestMap(
+                    poi = quest.poi,
+                    myLatitude = state.myLatitude,
+                    myLongitude = state.myLongitude,
+                    modifier = Modifier.fillMaxSize(),
+                    interactive = false,
                 )
-                Text(
-                    quest.poi.name,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                )
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(12.dp),
+                ) {
+                    Text(
+                        "Voir la carte",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    )
+                }
             }
         }
-
-        // Chips distance + date
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            state.distanceMeters?.let { meters ->
-                InfoChip("🚶", formatDistance(meters))
-            }
-            InfoChip("📅", quest.date)
-        }
-
-        when (state.myCheckIn?.status) {
-            null -> PillButton("Je suis là", onCheckInClick)
-            CheckInStatus.PENDING -> Text(
-                "En attente de validation…",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 4.dp),
-            )
-            CheckInStatus.VALIDATED -> ValidatedCelebration()
-            CheckInStatus.REJECTED -> Text(
-                "Non validé — demain est un nouveau jour.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        // Extrait Wikipedia
-        val blurb = quest.poi.description.trim()
-        if (blurb.isNotEmpty()) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surfaceVariant,
-            ) {
-                Text(
-                    if (blurb.length > 280) blurb.take(277) + "…" else blurb,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(16.dp),
-                )
-            }
-        }
-
-        // Carte OSM intégrée (tap → plein écran)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(MaterialTheme.shapes.large)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onMapClick,
-                ),
-        ) {
-            QuestMap(
-                poi = quest.poi,
-                myLatitude = state.myLatitude,
-                myLongitude = state.myLongitude,
-                modifier = Modifier.fillMaxSize(),
-                interactive = false,
-            )
-            Surface(
-                shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(10.dp),
-            ) {
-                Text(
-                    "Agrandir",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                )
-            }
-        }
-
-        Spacer(Modifier.height(8.dp))
     }
 }
 
 @Composable
 private fun InfoChip(emoji: String, label: String) {
     Surface(
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Text(
-            "$emoji $label",
+            "$emoji  $label",
             style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
         )
     }
 }
@@ -307,9 +258,9 @@ fun RarityBadge(rarity: Rarity) {
         Rarity.RARE -> Triple("Rare", MaterialTheme.colorScheme.surface, RarityRare)
         Rarity.LEGENDARY -> Triple("Légendaire", RarityLegendary, Color.White)
     }
-    Surface(shape = MaterialTheme.shapes.small, color = bg) {
+    Surface(shape = CircleShape, color = bg) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {

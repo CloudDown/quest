@@ -3,7 +3,6 @@
 ## Repo Shape
 - `server/` — backend FastAPI live ; entrypoint `server/main.py`, config `server/config.py`, SQLite `server/quest.db` par défaut.
 - `mobile_app/` — app Android : Kotlin + Compose, Gradle wrapper, module unique `:app`.
-- `apps/mobile/` — ancien prototype Expo (ne pas étendre).
 - `PRODUCT.md` — spec produit.
 
 ## Backend Commands
@@ -30,9 +29,15 @@
 - Le lieu du jour est créé au premier `POST /quests/today` pour une ville+date, puis figé.
 
 ## Mobile Commands
-- Configurer l’URL API : `cd mobile_app && ./configure-device-api.sh usb` (ou `lan`).
-- Build : `cd mobile_app && ./gradlew assembleDebug`.
-- Install + launch depuis la racine : `adb install app/build/outputs/apk/debug/app-debug.apk` (wrapper `bin/adb`).
+- Configurer l’URL API : `cd mobile_app && ./configure-device-api.sh pi` (ou `usb`, `lan`, `emulator`, `url`).
+- Release APK : `cd mobile_app && ./release-github.sh`
+- Build seul : `cd mobile_app && ./gradlew assembleDebug`
+- Install + launch depuis la racine : `adb install …` (wrapper `bin/adb`)
+
+## Raspberry Pi (h24)
+- Service : `quest-api` port **8001** (Dispo = 8000, Instree = 1488)
+- Déployer : `python3 deploy/pi/deploy_paramiko.py`
+- Doc : [`deploy/pi/README.md`](deploy/pi/README.md)
 
 ## Mobile Structure
 - Mono-module Dispo-like : `core/` (models, repository, location, wiki client local) + `ui/`.

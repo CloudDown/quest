@@ -74,9 +74,9 @@ fun ValidatedCelebration() {
                 Text("Quest réussi !", style = MaterialTheme.typography.headlineSmall)
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    "Ta photo est validée. Le mur du jour est ouvert — " +
-                        "va voir qui d'autre y est allé.",
+                    "Le mur est ouvert. Va voir qui d’autre y est allé.",
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(10.dp))
                 Row(

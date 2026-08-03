@@ -7,6 +7,7 @@ from db import get_session
 from quests.models import (
     CheckIn,
     CheckInPublic,
+    SubmitCheckInRequest,
     SubmitCheckInResponse,
     TodayRequest,
     QuestPublic,
@@ -81,10 +82,11 @@ def my_check_in(
 @router.post("/{quest_id}/check-in", response_model=SubmitCheckInResponse)
 def submit_check_in(
     quest_id: int,
+    req: SubmitCheckInRequest = SubmitCheckInRequest(),
     session: Session = Depends(get_session),
     user: User = Depends(get_current_user),
 ):
-    c = quest_service.submit_check_in(session, user, quest_id, photo_path=None)
+    c = quest_service.submit_check_in(session, user, quest_id, photo_path=req.photo_url)
     return SubmitCheckInResponse(
         check_in=CheckInPublic(
             id=c.id,
@@ -112,3 +114,46 @@ def validate(
         validated_by=c.validated_by,
         submitted_at=c.submitted_at,
     )
+
+
+@router.get("/history")
+def history(
+    session: Session = Depends(get_session),
+    user: User = Depends(get_current_user),
+):
+    """Quests passés où l'utilisateur a checké (vrais, pas de faux journaux)."""
+    from quests.models import DailyQuest
+
+    check_ins = session.exec(
+        select(CheckIn).where(CheckIn.user_id == user.id)
+    ).all()
+    check_ins = sorted(check_ins, key=lambda c: c.submitted_at, reverse=True)
+    out = []
+    for c in check_ins[:30]:
+        q = session.get(DailyQuest, c.quest_id)
+        if not q:
+            continue
+        out.append(
+            {
+                "quest": {
+                    "id": q.id,
+                    "date": q.date,
+                    "city_name": q.city_name,
+                    "poi_name": q.poi_name,
+                    "poi_description": q.poi_description,
+                    "latitude": q.latitude,
+                    "longitude": q.longitude,
+                    "rarity": q.rarity,
+                    "photo_url": q.photo_url,
+                },
+                "check_in": {
+                    "id": c.id,
+                    "quest_id": c.quest_id,
+                    "user_id": c.user_id,
+                    "status": c.status,
+                    "validated_by": c.validated_by,
+                    "submitted_at": c.submitted_at.isoformat(),
+                },
+            }
+        )
+    return out

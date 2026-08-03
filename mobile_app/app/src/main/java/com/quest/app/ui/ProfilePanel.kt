@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -44,32 +45,49 @@ fun ProfilePanel(
 ) {
     val context = LocalContext.current
     val city = state.todayQuest?.cityName
+    val doneCount = state.history.count { it.checkIn != null }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 4.dp),
             ) {
                 Box(
                     modifier = Modifier
-                        .size(88.dp)
-                        .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
+                        .size(96.dp)
+                        .background(
+                            brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    MaterialTheme.colorScheme.secondaryContainer,
+                                ),
+                            ),
+                            shape = CircleShape,
+                        ),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("🌿", fontSize = 36.sp)
+                    Text("🌿", fontSize = 40.sp)
                 }
                 Spacer(Modifier.height(14.dp))
-                Text("toi", style = MaterialTheme.typography.headlineMedium)
+                Text(state.username, style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    city ?: "Ville non détectée",
+                    city ?: "Ville en attente",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (!state.serverOnline) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "Hors ligne — données locales",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
 
@@ -79,98 +97,121 @@ fun ProfilePanel(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 StatCard("🔥", "${state.streak}", "série", Modifier.weight(1f))
-                StatCard(
-                    "✓",
-                    "${state.history.count { it.checkIn != null }}",
-                    "faits",
-                    Modifier.weight(1f),
-                )
+                StatCard("✓", "$doneCount", "faits", Modifier.weight(1f))
             }
         }
 
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Apparence", style = MaterialTheme.typography.titleMedium)
-                ThemeModeSelector(selected = state.themeMode, onSelect = onThemeModeChange)
-            }
-        }
-
-        item {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Localisation", style = MaterialTheme.typography.titleMedium)
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
-                            if (state.hasLocationPermission) {
-                                context.startActivity(
-                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = Uri.fromParts("package", context.packageName, null)
-                                    },
-                                )
-                            } else {
-                                onGrantPermission()
-                            }
-                        },
-                    shape = MaterialTheme.shapes.large,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surface,
+            ) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Text("Apparence", style = MaterialTheme.typography.titleMedium)
+                    ThemeModeSelector(selected = state.themeMode, onSelect = onThemeModeChange)
+                    Spacer(Modifier.height(2.dp))
+                    Text("Localisation", style = MaterialTheme.typography.titleMedium)
                     Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.medium)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                if (state.hasLocationPermission) {
+                                    context.startActivity(
+                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                            data = Uri.fromParts("package", context.packageName, null)
+                                        },
+                                    )
+                                } else {
+                                    onGrantPermission()
+                                }
+                            }
+                            .padding(horizontal = 14.dp, vertical = 14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            if (state.hasLocationPermission) "Activée" else "Autoriser",
+                            if (state.hasLocationPermission) "Activée" else "Non autorisée",
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
-                            if (state.hasLocationPermission) "Réglages →" else "→",
+                            if (state.hasLocationPermission) "Réglages" else "Autoriser",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
                 }
             }
         }
 
-        if (state.history.isNotEmpty()) {
+        if (state.history.isEmpty()) {
             item {
-                Text("Récents", style = MaterialTheme.typography.titleMedium)
-            }
-            items(state.history.take(5), key = { it.quest.id }) { entry ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surface,
                 ) {
-                    Text(
-                        if (entry.checkIn != null) "✓" else "–",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = if (entry.checkIn != null) {
-                            MaterialTheme.colorScheme.tertiary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(entry.quest.poi.name, style = MaterialTheme.typography.bodyLarge)
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Récents", style = MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(6.dp))
                         Text(
-                            entry.quest.date,
-                            style = MaterialTheme.typography.labelMedium,
+                            "Tes check-ins apparaîtront ici au fil des jours.",
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
             }
+        } else {
+            item {
+                Text(
+                    "Récents",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+            }
+            items(state.history.take(6), key = { it.quest.id }) { entry ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    if (entry.checkIn != null) MaterialTheme.colorScheme.primaryContainer
+                                    else MaterialTheme.colorScheme.surfaceVariant,
+                                    CircleShape,
+                                ),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(if (entry.checkIn != null) "✓" else "–")
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(entry.quest.poi.name, style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                entry.quest.date,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        RarityBadge(entry.quest.poi.rarity)
+                    }
+                }
+            }
         }
 
-        item { Spacer(Modifier.height(8.dp)) }
+        item { Spacer(Modifier.height(12.dp)) }
     }
 }
 
@@ -179,13 +220,14 @@ private fun StatCard(emoji: String, value: String, label: String, modifier: Modi
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 16.dp),
+            modifier = Modifier.padding(vertical = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("$emoji $value", style = MaterialTheme.typography.titleLarge)
+            Text("$emoji  $value", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(2.dp))
             Text(
                 label,
                 style = MaterialTheme.typography.labelMedium,
@@ -215,11 +257,8 @@ fun ThemeModeSelector(
         options.forEach { (mode, label) ->
             val isSelected = selected == mode
             val bg by animateColorAsState(
-                targetValue = if (isSelected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                },
+                targetValue = if (isSelected) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.surfaceVariant,
                 animationSpec = tween(220),
                 label = "themeSeg",
             )
@@ -237,11 +276,8 @@ fun ThemeModeSelector(
                 Text(
                     label,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

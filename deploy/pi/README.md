@@ -15,7 +15,7 @@ cd /chemin/vers/quest
 python3 deploy/pi/deploy_paramiko.py
 ```
 
-Variables : `PI_PASS` **obligatoire** (`oeuil/secrets.env` ou `export`). Optionnelles : `PI_HOST`, `PI_USER`, `PI_DIR`, `PI_DATA`.
+Variables : `PI_PASS` **obligatoire** (`scripts/secrets.env` ou `export`). Optionnelles : `PI_HOST`, `PI_USER`, `PI_DIR`, `PI_DATA`.
 
 ## Déploiement manuel
 
@@ -38,12 +38,9 @@ sudo systemctl status quest-api
 journalctl -u quest-api -f
 ```
 
-## Mobile (LAN / Waydroid)
+## Mobile (APK GitHub)
 
 ```bash
 cd mobile_app
-./configure-device-api.sh pi
-./run-phone.sh pi
-# ou
-./run-waydroid.sh pi
+./release-github.sh
 ```

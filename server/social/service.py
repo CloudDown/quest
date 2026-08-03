@@ -37,10 +37,10 @@ def wall_for_quest(session: Session, quest_id: int, unlocked: bool) -> list[Wall
 
 
 def leaderboard(session: Session, city_name: str | None) -> list[LeaderboardEntry]:
-    query = select(User)
-    if city_name:
-        query = query.where(User.city_name == city_name)
-    users = session.exec(query).all()
+    # Pas de ville = pas de liste (évite d'afficher des comptes seed / hors contexte)
+    if not city_name:
+        return []
+    users = session.exec(select(User).where(User.city_name == city_name)).all()
     users = sorted(users, key=lambda u: (-u.streak, -u.total_check_ins, u.username))
     day = date.today().isoformat()
     entries: list[LeaderboardEntry] = []

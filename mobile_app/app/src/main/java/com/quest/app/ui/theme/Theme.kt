@@ -19,14 +19,14 @@ import androidx.compose.ui.unit.sp
 // Neutres (90 % de l’UI)
 val Ink = Color(0xFF12141A)          // texte principal
 val Slate = Color(0xFF5C6570)        // texte secondaire
-val Paper = Color(0xFFF4F4F2)        // fond
+val Paper = Color(0xFFF7F6F2)        // fond — blanc chaud nature
 val Snow = Color(0xFFFFFFFF)         // cartes / surfaces
-val Line = Color(0xFFDDDDD8)         // séparateurs
-val Soft = Color(0xFFECECE8)         // surface variante
+val Line = Color(0xFFE2E0D8)         // séparateurs
+val Soft = Color(0xFFEEEDE6)         // surface variante
 
 // Action (CTA uniquement)
-val Signal = Color(0xFF1B7A4A)       // vert franc, texte blanc
-val SignalSoft = Color(0xFFDFF0E6)   // fond d’état positif
+val Signal = Color(0xFF1F8A52)       // vert feuille moderne
+val SignalSoft = Color(0xFFE3F5EA)   // fond d’état positif
 
 // Accent chaud (légendaire / célébration)
 val Amber = Color(0xFFC47E00)
@@ -101,13 +101,12 @@ private val DarkColors = darkColorScheme(
     outlineVariant = NightSoft,
 )
 
-// Formes nettes : structure lisible, pas de « blob » organique
 private val QuestShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(20.dp),
-    extraLarge = RoundedCornerShape(24.dp),
+    extraSmall = RoundedCornerShape(10.dp),
+    small = RoundedCornerShape(14.dp),
+    medium = RoundedCornerShape(18.dp),
+    large = RoundedCornerShape(22.dp),
+    extraLarge = RoundedCornerShape(28.dp),
 )
 
 private val QuestTypography = Typography().let { base ->

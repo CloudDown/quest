@@ -18,7 +18,8 @@ DATABASE_URL = os.getenv("QUEST_DATABASE_URL", "sqlite:///./quest.db")
 UPLOAD_DIR = Path(os.getenv("QUEST_UPLOAD_DIR", "./uploads"))
 
 DEMO_MODE = os.getenv("QUEST_DEMO_MODE", "1").strip().lower() in {"1", "true", "yes", "on"}
-DEMO_AUTO_SEED = os.getenv("QUEST_DEMO_AUTO_SEED", "1").strip().lower() in {"1", "true", "yes", "on"}
+# Pas de comptes fictifs par défaut — l’app crée un compte appareil.
+DEMO_AUTO_SEED = os.getenv("QUEST_DEMO_AUTO_SEED", "0").strip().lower() in {"1", "true", "yes", "on"}
 
 # Rayon Wikipedia autour du centre-ville (mètres, max API = 10_000)
 WIKI_RADIUS_M = int(os.getenv("QUEST_WIKI_RADIUS_M", "10000"))

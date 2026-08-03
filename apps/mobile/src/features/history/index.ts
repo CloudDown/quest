@@ -1,1 +1,0 @@
-export { fetchMyHistory } from './api';

@@ -103,6 +103,10 @@ data class QuestUiState(
     val wallPhotos: List<WallPhoto> = emptyList(),
     val leaderboard: List<LeaderboardEntry> = emptyList(),
     val history: List<HistoryEntry> = emptyList(),
+    /** Id serveur (ou "local" hors ligne). */
+    val myUserId: String = "",
+    val username: String = "explorateur",
+    val serverOnline: Boolean = false,
 ) {
     val wallUnlocked: Boolean get() = myCheckIn != null
 }

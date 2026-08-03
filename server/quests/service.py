@@ -8,6 +8,7 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 
 from auth.models import User
+from config import DEMO_MODE
 from places.service import pick_daily_place
 from places.wikipedia import places_around
 from quests.models import CheckIn, CheckInStatus, DailyQuest, QuestPublic
@@ -96,16 +97,30 @@ def submit_check_in(session: Session, user: User, quest_id: int, photo_path: str
     if existing:
         return existing
 
+    # Bootstrap : s'il n'y a pas encore d'autre Quester sur ce lieu aujourd'hui,
+    # on valide tout de suite (sinon le mur resterait bloqué en solo).
+    others = session.exec(
+        select(CheckIn).where(
+            CheckIn.quest_id == quest_id,
+            CheckIn.user_id != user.id,
+        )
+    ).all()
+    auto_validate = DEMO_MODE or len(others) == 0
+
     check_in = CheckIn(
         quest_id=quest_id,
         user_id=user.id,
         photo_path=photo_path,
-        status=CheckInStatus.PENDING.value,
+        status=CheckInStatus.VALIDATED.value if auto_validate else CheckInStatus.PENDING.value,
+        validated_by=user.id if auto_validate else None,
     )
     session.add(check_in)
     if user.city_name != quest.city_name:
         user.city_name = quest.city_name
-        session.add(user)
+    if auto_validate:
+        user.total_check_ins += 1
+        user.streak += 1
+    session.add(user)
     session.commit()
     session.refresh(check_in)
     return check_in

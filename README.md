@@ -1,63 +1,103 @@
 # Quest
 
-> Un rendez-vous quotidien dans ta ville. Un lieu. Tout le monde. Aujourd'hui.
+> Un rendez-vous quotidien dans ta ville. **Un lieu. Tout le monde. Aujourd'hui.**
 
-Spec produit : [PRODUCT.md](PRODUCT.md)
+Chaque jour, Quest révèle **le même POI** pour tous les joueurs d'une ville — tiré de Wikipedia autour du centre-ville. Check-in sur place, partage une photo, grimpe au classement.
 
-## Structure (inspirée de Vif)
+| Badge | Rareté |
+|-------|--------|
+| ○ | Commun |
+| ★ | Rare (1× / semaine) |
+| ★★ | Légendaire (1× / mois) |
 
-```
-quest/
-├── server/          # API FastAPI — lieu du jour, social, auth
-├── mobile_app/      # Android Kotlin + Compose
-├── apps/mobile/     # ancien prototype Expo (legacy)
-├── packages/        # partagé éventuel
-├── PRODUCT.md
-├── AGENTS.md
-└── bin/adb          # install + launch en une commande
-```
+App Android **Kotlin / Compose** + API **FastAPI**. Backend h24 sur Raspberry Pi (`:8001`).
 
-## Backend
+Spec produit : [PRODUCT.md](PRODUCT.md) · **Télécharger** : [Quest v0.2.0 — APK](https://github.com/CloudDown/quest/releases/latest)
+
+---
+
+## Installation rapide
+
+### Android (APK)
+
+1. Télécharge l'APK depuis [GitHub Releases](https://github.com/CloudDown/quest/releases/latest).
+2. Autorise la **localisation** au premier lancement (ville → lieu du jour).
+3. Explore, check-in, partage sur le mur.
+
+### Développeur
 
 ```bash
-cd server
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+git clone https://github.com/CloudDown/quest.git
+cd quest/mobile_app
+./release-github.sh     # build + publish APK (API Pi)
 ```
 
-- Docs : http://localhost:8000/docs
-- Health : http://localhost:8000/health
-- Mode démo par défaut (`QUEST_DEMO_MODE=1`) avec comptes seed : `rain/rain`, `alex/alex`…
+Backend local :
 
-### Modules serveur
+```bash
+cd server && python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# → http://localhost:8000/docs
+```
+
+Deploy Pi : [`deploy/pi/README.md`](deploy/pi/README.md)
+
+---
+
+## Les 3 écrans
+
+### Quest — lieu du jour
+
+![Quest du jour](docs/screenshots/readme-quest.png)
+
+L'écran principal : le POI du jour avec photo Wikipedia.
+
+- **Seed déterministe** `ville + date` → même lieu pour tous
+- Badge de **rareté** (commun / rare / légendaire)
+- Streak & stats ville · CTA **Check-in**
+- Cache DataStore — stable toute la journée, offline après le 1er load
+
+### Mur — photos des explorateurs
+
+![Mur](docs/screenshots/readme-wall.png)
+
+Feed social des check-ins du jour.
+
+- Grille de photos postées sur place
+- Classement hebdo des joueurs de la ville
+- Réactions et validations pair-à-pair (API prête)
+
+### Carte — navigation vers le lieu
+
+![Carte](docs/screenshots/readme-map.png)
+
+Carte OpenStreetMap (osmdroid) avec pin du quest.
+
+- Distance GPS en temps réel
+- Sheet récapitulatif du POI
+- Ouverture navigation externe
+
+---
+
+## API
 
 | Module | Rôle |
 |--------|------|
 | `auth/` | Inscription, login JWT, profil |
 | `places/` | Wikipedia geosearch + tirage déterministe ville+date |
-| `quests/` | Quest du jour figé en DB, check-in, validation par les pairs |
+| `quests/` | Quest du jour figé en DB, check-in, validation |
 | `social/` | Mur de photos, leaderboard, réactions |
 
-Routers fins + logique dans `*/service.py` (comme Vif).
+Mode démo (`QUEST_DEMO_MODE=1`) : comptes seed `rain/rain`, `alex/alex`…
 
-## Mobile
+---
 
-```bash
-cd mobile_app
-./configure-device-api.sh usb   # ou lan
-./gradlew assembleDebug
-# depuis la racine du repo :
-adb install app/build/outputs/apk/debug/app-debug.apk
-```
+## Stack
 
-L’URL API est lue depuis `mobile_app/local.properties` → `quest.api.base.url`.
+| Couche | Techno |
+|--------|--------|
+| Mobile | Kotlin, Compose, osmdroid, Coil, DataStore, Play Services Location |
+| API | FastAPI, SQLModel, JWT, SQLite |
 
-## Qui fait quoi (MVP actuel)
-
-| Responsabilité | Où |
-|----------------|-----|
-| Choix du lieu (Wikipedia, seed ville+date) | **Serveur** (`places/` + `quests/`) — aussi encore en local côté app le temps de brancher l’API |
-| Social (mur, classement, validations) | **Serveur** (`social/`, `quests/`) |
-| GPS → nom de ville | **Mobile** (Geocoder) puis envoi centre-ville au serveur |
-| UI, carte OSM, thème | **Mobile** |
+Structure : `mobile_app/` + `server/` + `deploy/pi/`. Conventions agents : [AGENTS.md](AGENTS.md).

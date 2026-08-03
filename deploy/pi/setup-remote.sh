@@ -5,7 +5,7 @@ set -euo pipefail
 QUEST_DIR="${QUEST_DIR:-/home/pi/quest}"
 DATA_DIR="${QUEST_DATA:-/var/lib/quest}"
 SERVICE_USER="${SERVICE_USER:-pi}"
-SUDO_PASS="${SUDO_PASS:?SUDO_PASS/PI_PASS manquant — export PI_PASS ou oeuil/secrets.env}"
+SUDO_PASS="${SUDO_PASS:?SUDO_PASS/PI_PASS manquant — export PI_PASS ou scripts/secrets.env}"
 QUEST_PORT="${QUEST_PORT:-8001}"
 
 sudo_cmd() {
