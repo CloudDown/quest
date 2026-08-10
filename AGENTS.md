@@ -29,19 +29,14 @@
 - Le lieu du jour est créé au premier `POST /quests/today` pour une ville+date, puis figé.
 
 ## Mobile Commands
-- Configurer l’URL API : `cd mobile_app && ./configure-device-api.sh pi` (ou `usb`, `lan`, `emulator`, `url`).
+- Configurer l’URL API : `cd mobile_app && ./configure-device-api.sh lan` (ou `usb`, `emulator`, `url`).
 - Release APK : `cd mobile_app && ./release-github.sh`
 - Build seul : `cd mobile_app && ./gradlew assembleDebug`
 - Install + launch depuis la racine : `adb install …` (wrapper `bin/adb`)
 
-## Raspberry Pi (h24)
-- Service : `quest-api` port **8001** (Dispo = 8000, Instree = 1488)
-- Déployer : `python3 deploy/pi/deploy_paramiko.py`
-- Doc : [`deploy/pi/README.md`](deploy/pi/README.md)
-
 ## Mobile Structure
 - Mono-module Dispo-like : `core/` (models, repository, location, wiki client local) + `ui/`.
-- `BuildConfig.API_BASE_URL` / `QuestApi` pointent vers le serveur ; brancher progressivement le repository sur l’API.
+- `BuildConfig.API_BASE_URL` / `QuestApi` pointent vers le serveur local.
 - Thème clair/sombre persisté (DataStore) ; page Paramètres.
 
 ## Mobile Gotchas

@@ -10,7 +10,7 @@ Chaque jour, Quest révèle **le même POI** pour tous les joueurs d'une ville �
 | ★ | Rare (1× / semaine) |
 | ★★ | Légendaire (1× / mois) |
 
-App Android **Kotlin / Compose** + API **FastAPI**. Backend h24 sur Raspberry Pi (`:8001`).
+App Android **Kotlin / Compose** + API **FastAPI** (serveur local sur ton PC).
 
 Spec produit : [PRODUCT.md](PRODUCT.md) · **Télécharger** : [Quest v0.2.0 — APK](https://github.com/CloudDown/quest/releases/latest)
 
@@ -21,15 +21,16 @@ Spec produit : [PRODUCT.md](PRODUCT.md) · **Télécharger** : [Quest v0.2.0 —
 ### Android (APK)
 
 1. Télécharge l'APK depuis [GitHub Releases](https://github.com/CloudDown/quest/releases/latest).
-2. Autorise la **localisation** au premier lancement (ville → lieu du jour).
-3. Explore, check-in, partage sur le mur.
+2. Lance le backend sur ton PC (voir ci-dessous) — même réseau Wi-Fi que le téléphone.
+3. Autorise la **localisation** au premier lancement (ville → lieu du jour).
 
 ### Développeur
 
 ```bash
 git clone https://github.com/CloudDown/quest.git
 cd quest/mobile_app
-./release-github.sh     # build + publish APK (API Pi)
+./release-github.sh
+./configure-device-api.sh lan
 ```
 
 Backend local :
@@ -40,8 +41,6 @@ cd server && python3 -m venv .venv
 .venv/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
 # → http://localhost:8000/docs
 ```
-
-Deploy Pi : [`deploy/pi/README.md`](deploy/pi/README.md)
 
 ---
 
@@ -100,4 +99,4 @@ Mode démo (`QUEST_DEMO_MODE=1`) : comptes seed `rain/rain`, `alex/alex`…
 | Mobile | Kotlin, Compose, osmdroid, Coil, DataStore, Play Services Location |
 | API | FastAPI, SQLModel, JWT, SQLite |
 
-Structure : `mobile_app/` + `server/` + `deploy/pi/`. Conventions agents : [AGENTS.md](AGENTS.md).
+Structure : `mobile_app/` + `server/`. Conventions agents : [AGENTS.md](AGENTS.md).
