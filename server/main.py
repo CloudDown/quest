@@ -1,8 +1,8 @@
 """
 Quest — API Backend
 ===================
-Lancer : uvicorn main:app --reload --host 0.0.0.0 --port 8000
-Doc     : http://localhost:8000/docs
+Lancer : ./server.sh  (port 8001)
+Doc     : http://localhost:8001/docs
 """
 from contextlib import asynccontextmanager
 
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
         from seed_dev import seed
         seed()
         print("🎬 Mode démo actif — comptes seed chargés")
-    print("✅ Quest API démarrée — http://localhost:8000/docs")
+    print("✅ Quest API démarrée — http://localhost:8001/docs")
     yield
 
 

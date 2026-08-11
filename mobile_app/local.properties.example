@@ -2,12 +2,5 @@
 
 sdk.dir=/chemin/vers/Android/Sdk
 
-# ── URL de l'API Quest (BuildConfig.API_BASE_URL) ───────────────────────────
-#
-# Wi-Fi (PC local) :
-#   ./configure-device-api.sh lan
-#
-# USB + adb reverse :
-#   ./configure-device-api.sh usb
-
-quest.api.base.url=http://127.0.0.1:8000
+# URL API compilée dans l'APK au release (./release-github.sh).
+quest.api.base.url=http://127.0.0.1:8001

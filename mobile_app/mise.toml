@@ -1,4 +1,0 @@
-# Toolchain locale du projet Android (JDK 17+ requis par AGP 9)
-[tools]
-java = "21.0.2"
-gradle = "9.4.1"
