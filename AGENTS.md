@@ -9,7 +9,9 @@
 
 ```bash
 ./server.sh
+./server.sh --ngrok
 ./release-github.sh
+./release-github.sh ngrok
 cd mobile_app && ./gradlew assembleDebug
 ```
 

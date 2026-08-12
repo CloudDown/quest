@@ -184,6 +184,7 @@ object QuestApi {
                 connectTimeout = 4_000
                 readTimeout = 4_000
                 requestMethod = "GET"
+                setRequestProperty("ngrok-skip-browser-warning", "true")
             }
             conn.responseCode in 200..299
         } catch (_: Exception) {
@@ -244,6 +245,7 @@ object QuestApi {
             readTimeout = 20_000
             requestMethod = method
             setRequestProperty("Accept", "application/json")
+            setRequestProperty("ngrok-skip-browser-warning", "true")
             if (auth) {
                 val token = accessToken
                     ?: throw IllegalStateException("Non authentifié")

@@ -8,16 +8,17 @@ App Android + API FastAPI — un lieu par jour, même ville, check-in sur place.
 
 1. **Backend** — sur le PC :
    ```bash
-   ./server.sh
+   ./server.sh            # Wi-Fi local (port 8001)
+   ./server.sh --ngrok    # + tunnel public (4G)
    ```
-   → `http://localhost:8001/docs`
 
 2. **Publier l'APK** :
    ```bash
    ./release-github.sh
+   ./release-github.sh ngrok
    ```
 
-3. **Téléphone** — APK depuis GitHub Releases, même Wi-Fi que le PC.
+3. **Téléphone** — APK depuis GitHub Releases (LAN = même Wi-Fi ; ngrok = 4G OK).
 
 Comptes démo : `rain` / `rain`, `alex` / `alex`.
 
