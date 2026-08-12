@@ -36,6 +36,7 @@ local.properties
 **/.venv/
 server/quest.db
 server/uploads/
+.ngrok-url
 
 # Debug
 *.log

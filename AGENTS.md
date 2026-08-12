@@ -9,14 +9,9 @@
 
 ```bash
 ./server.sh
-./server.sh --ngrok
+./server.sh --local
 ./release-github.sh
-./release-github.sh ngrok
-cd mobile_app && ./gradlew assembleDebug
+./release-github.sh lan
 ```
 
-## Conventions
-
-- Modules : `auth/`, `places/`, `quests/`, `social/`
-- Tirage déterministe lieu du jour : `ville + date` (Wikipedia)
-- Ouvrir **`mobile_app/`** dans Android Studio (pas la racine)
+Ouvrir **`mobile_app/`** dans Android Studio.
