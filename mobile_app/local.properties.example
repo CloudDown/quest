@@ -1,6 +1,6 @@
-# Copier vers local.properties (Android Studio → Sync après modification).
+# Copier vers local.properties (Android Studio → Sync).
 
 sdk.dir=/chemin/vers/Android/Sdk
 
-# URL API compilée dans l'APK au release (./release-github.sh).
-quest.api.base.url=http://127.0.0.1:8001
+# Production (Cloudflare) — défaut release :
+quest.api.base.url=https://quest.instree.org

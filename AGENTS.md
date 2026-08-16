@@ -3,7 +3,8 @@
 ## Layout
 
 - `server/` — FastAPI, port **8001**, env `QUEST_*`
-- `mobile_app/` — Android Kotlin + Compose
+- `mobile_app/` — Android
+- Public : `https://quest.instree.org`
 
 ## Commandes
 
@@ -13,5 +14,3 @@
 ./release-github.sh
 ./release-github.sh lan
 ```
-
-Ouvrir **`mobile_app/`** dans Android Studio.
