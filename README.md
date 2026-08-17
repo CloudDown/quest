@@ -9,8 +9,10 @@ App Android + API FastAPI — un lieu par jour, check-in sur place.
 
 ```bash
 ./server.sh
-./release-github.sh
+./release-github.sh   # GitHub + popup de mise à jour in-app
 ```
+
+Laisse `./server.sh` tourner après une release : l'app propose d'installer toute seule.
 
 LAN : `./server.sh --local` puis `./release-github.sh lan`.
 

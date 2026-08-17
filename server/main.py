@@ -20,6 +20,7 @@ from auth.router import router as auth_router
 from places.router import router as places_router
 from quests.router import router as quests_router
 from social.router import router as social_router
+from app_update import router as app_update_router
 
 
 @asynccontextmanager
@@ -48,6 +49,7 @@ app.include_router(auth_router)
 app.include_router(places_router)
 app.include_router(quests_router)
 app.include_router(social_router)
+app.include_router(app_update_router)
 
 
 @app.get("/health")

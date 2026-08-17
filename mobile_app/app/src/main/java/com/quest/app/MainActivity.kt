@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
             }
             QuestTheme(darkTheme = darkTheme) {
                 QuestApp(repository = repository)
+                AppUpdateDialog()
             }
         }
     }
