@@ -13,4 +13,6 @@
 ./server.sh --local
 ./release-github.sh
 ./release-github.sh lan
+./run-cable.sh
+./run-cable.sh --build
 ```
