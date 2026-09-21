@@ -1,23 +1,23 @@
 # Quest
 
-App Android + API FastAPI — un lieu par jour, check-in sur place.
+Android app + FastAPI API — one place per day, check in on site.
 
-**APK** : [GitHub Releases](https://github.com/CloudDown/quest/releases/latest)  
-**API publique** : https://quest.instree.org
+**APK**: [GitHub Releases](https://github.com/CloudDown/quest/releases/latest)  
+**Public API**: https://quest.instree.org
 
-## Utilisation
+## Usage
 
 ```bash
 ./server.sh
-./release-github.sh   # GitHub + popup de mise à jour in-app
-./run-cable.sh        # téléphone USB (adb)
+./release-github.sh   # GitHub + in-app update popup
+./run-cable.sh        # USB phone (adb)
 ./run-cable.sh --build
 ```
 
-Laisse `./server.sh` tourner après une release : l'app propose d'installer toute seule.
+Keep `./server.sh` running after a release: the app offers to install on its own.
 
-LAN : `./server.sh --local` puis `./release-github.sh lan`.
+LAN: `./server.sh --local` then `./release-github.sh lan`.
 
-Comptes démo : `rain` / `rain`, `alex` / `alex`.
+Demo accounts: `rain` / `rain`, `alex` / `alex`.
 
-Conventions Cursor : [AGENTS.md](AGENTS.md)
+Cursor conventions: [AGENTS.md](AGENTS.md)
